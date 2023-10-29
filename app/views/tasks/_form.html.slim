@@ -1,3 +1,8 @@
+= tesk.errors.present?
+  u1#error_explanation
+    - task.errores.full_messages.each od |message|
+      li= message
+
 = form_with model: task, local: true do |f|
   .form-group
     = f.label :name
