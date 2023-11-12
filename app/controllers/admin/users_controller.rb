@@ -1,6 +1,6 @@
 class Admin::UsersController < ApplicationController
   def index
-    @user = User.all
+    @users = User.all
   end
 
   def show
@@ -34,7 +34,7 @@ class Admin::UsersController < ApplicationController
       render :edit
     end
   end
-  
+
   def destroy
     @user = User.find(params[:id])
     @user.destroy
@@ -46,7 +46,7 @@ class Admin::UsersController < ApplicationController
   def user_params
     params.rewuire(:user).permit(:name, :email, :password, :password_confirmation)
   end
-  
+
   def require_admin
     redirect_to root_path unless current_user.admin?
   end
