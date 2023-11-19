@@ -1,6 +1,6 @@
-= tesk.errors.present?
+= task.errors.present?
   u1#error_explanation
-    - task.errores.full_messages.each od |message|
+    - task.errores.full_messages.each do |message|
       li= message
 
 = form_with model: task, local: true do |f|
