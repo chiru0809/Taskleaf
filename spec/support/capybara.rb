@@ -1,31 +1,45 @@
-RSpec.configure do |config|
-  config.before(:each, type: :system) do
-    driven_by :remote_chrome
-    Capybara.server_host = IPSocket.getaddress(Socket.gethostname)
-    Capybara.server_port = 4444
-    Capybara.app_host = "http://#{Capybara.server_host}:#{Capybara.server_port}"
-  end
+require 'selenium-webdriver'
+require 'capybara/rspec'
 
-  config.before(:each, type: :system, js: true) do
-    driven_by :remote_chrome
-    Capybara.server_host = IPSocket.getaddress(Socket.gethostname)
-    Capybara.server_port = 4444
-    Capybara.app_host = "http://#{Capybara.server_host}:#{Capybara.server_port}"
-  end
+Capybara.configure do |config|
+
+  config.default_driver = :chrome
+  config.javascript_driver = :chrome
+  config.run_server = true
+  config.default_selector = :css
+  config.default_max_wait_time = 5
+  config.ignore_hidden_elements = true
+  config.save_path = Dir.pwd
+  config.automatic_label_click = false
 end
 
-# Chrome
-Capybara.register_driver :remote_chrome do |app|
-  url = 'http://chrome:4444/wd/hub'
-  caps = ::Selenium::WebDriver::Remote::Capabilities.chrome(
-    'goog:chromeOptions' => {
-      'args' => [
-        'no-sandbox',
-        'headless',
-        'disable-gpu',
-        'window-size=1680,1050'
-      ]
-    }
-  )
-  Capybara::Selenium::Driver.new(app, browser: :remote, url: url, desired_capabilities: caps)
+Capybara.register_driver :chrome do |app|
+
+  options = Selenium::WebDriver::Chrome::Options.new
+
+  options.add_argument('disable-notifications')
+  options.add_argument('disable-translate')
+  options.add_argument('disable-extensions')
+  options.add_argument('disable-infobars')
+  options.add_argument('window-size=1280,960')
+
+
+  # ブラウザーを起動する
+  Capybara::Selenium::Driver.new(
+    app,
+    browser: :chrome,
+    options: options)
+
+  # RSpec.configure do |config|
+  #   config.before(:each, type: :system) do
+  #     driven_by :selenium_chrome_headless
+  #   end
+  # end
+
+  RSpec.configure do |config|
+    config.before(:each, type: :system) do
+        driven_by :selenium, using: :headless_chrome　#←ブラウザの表示無
+       #driven_by :selenium_chrome　←ブラウザの表示有
+    end
+end
 end
